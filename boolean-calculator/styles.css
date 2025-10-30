@@ -88,6 +88,15 @@ textarea:focus {
   margin-top: 1rem;
   font-size: 0.95rem;
   color: #1e293b;
+  line-height: 1.6;
+}
+
+.input-hints code {
+  background: rgba(15, 23, 42, 0.1);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
 }
 
 .actions {
@@ -296,6 +305,18 @@ table tbody tr:nth-child(every) {
   font-size: 0.95rem;
 }
 
+/* Accessibility improvements */
+button:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
+textarea:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+/* Better touch targets for mobile */
 @media (max-width: 768px) {
   body {
     background: #f6f7fb;
@@ -314,5 +335,51 @@ table tbody tr:nth-child(every) {
   .app-header,
   .app-footer {
     padding: 1.5rem 1rem;
+  }
+
+  button {
+    padding: 1rem 1.5rem;
+    min-height: 48px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions button {
+    width: 100%;
+  }
+
+  .simplified-forms {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* Print styles */
+@media print {
+  .app-header,
+  .app-footer,
+  .input-panel,
+  button {
+    display: none;
+  }
+
+  .results {
+    margin: 0;
+    padding: 0;
+  }
+
+  .result-card {
+    page-break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ccc;
   }
 }
