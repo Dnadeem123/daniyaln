@@ -18,16 +18,23 @@ This directory contains a self-contained HTML/CSS/JS widget that implements a fu
 1. Place the project folder on any static web server. The files are plain HTML with no build step required.
 2. Open `index.html` in a modern browser (Chrome, Edge, Firefox, Safari) to interact with the calculator.
 
-## Embedding in WordPress (No-Code Steps)
+## 🚀 WordPress Integration
 
-1. From your WordPress dashboard, create or edit the page where the tool should appear.
-2. Add a **Custom HTML** block (Gutenberg) or use your preferred HTML-snippet plugin.
-3. Copy the entire contents of `index.html` into the block. Make sure to also upload `styles.css` and `app.js` somewhere accessible:
-   - Option A: Host `styles.css` and `app.js` in your theme or child-theme directory (e.g., `/wp-content/uploads/boolean-calculator/`) and adjust the `<link>`/`<script>` paths in the HTML.
-   - Option B: Inline the CSS and JS directly into the HTML block (replace the `<link rel="stylesheet" href="styles.css" />` tag with a `<style>...</style>` block, and replace the `<script type="module" src="app.js"></script>` with a `<script type="module">...</script>` block containing the file contents).
-4. Save/update the page and test the calculator on both desktop and mobile.
+**See the complete [WORDPRESS-INTEGRATION-GUIDE.md](./WORDPRESS-INTEGRATION-GUIDE.md)** for detailed step-by-step instructions with three different integration methods:
 
-> **Tip:** If you prefer not to touch theme files, use a snippet manager such as **WPCode**. Create two snippets: one for the CSS (loaded in the header) and one for the JS (footer). Then drop the HTML markup, referencing the snippet-generated URLs.
+1. **Method 1: Direct Embed** (Easiest for beginners)
+2. **Method 2: Using WPCode Plugin** (Most professional)
+3. **Method 3: External Hosting with iFrame** (Simplest updates)
+
+### Quick Start (5 minutes):
+
+1. Upload `app.js` and `styles.css` to WordPress Media Library
+2. Copy the URLs
+3. Create a new page with a Custom HTML block
+4. Paste the HTML from `index.html` and update the file URLs
+5. Publish!
+
+**No backend required. No database needed. $0 monthly cost.** ✅
 
 ## Customisation Notes
 

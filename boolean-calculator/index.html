@@ -23,6 +23,9 @@
         Enter a Boolean expression using operators like AND, OR, NOT, XOR, NAND,
         NOR. Up to 5 variables are supported.
       </p>
+      <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.9;">
+        ✨ Features: Truth Tables • K-Maps • Circuit Diagrams • SOP/POS/DNF/CNF • Step-by-Step Simplification
+      </p>
     </header>
 
     <main class="app">
@@ -34,12 +37,14 @@
           placeholder="Example: (A AND B') OR (C XOR D)"
         ></textarea>
         <div class="input-hints">
-          <strong>Tip:</strong> Supported symbols include AND/&middot;/&amp;/·/*, OR/+/&verbar;, NOT/!/~/' (postfix),
+          <strong>Tip:</strong> Supported symbols include AND/·/&amp;/·/*, OR/+/|, NOT/!/~/' (postfix),
           XOR/^/⊕, NAND, NOR.
+          <br><strong>Examples:</strong> Try <code>A AND B</code>, <code>(A+B)·C</code>, <code>A' OR B</code>, or <code>A XOR B</code>
         </div>
         <div class="actions">
           <button id="evaluate-btn">Evaluate</button>
           <button id="clear-btn" class="ghost">Clear</button>
+          <button id="example-btn" class="ghost">Load Example</button>
         </div>
         <div id="error-box" class="error-box" hidden></div>
       </section>
@@ -100,6 +105,14 @@
         <div class="result-card" id="circuit-card">
           <h2>Logic Circuit Diagram</h2>
           <div id="circuit-diagram" class="circuit-diagram"></div>
+        </div>
+
+        <div class="result-card" id="export-card">
+          <h2>Export Results</h2>
+          <div class="actions">
+            <button id="copy-results-btn" class="ghost">📋 Copy All Results</button>
+            <button id="download-results-btn" class="ghost">⬇️ Download as Text</button>
+          </div>
         </div>
       </section>
     </main>

@@ -1,6 +1,9 @@
 const expressionInput = document.getElementById('expression-input');
 const evaluateBtn = document.getElementById('evaluate-btn');
 const clearBtn = document.getElementById('clear-btn');
+const exampleBtn = document.getElementById('example-btn');
+const copyResultsBtn = document.getElementById('copy-results-btn');
+const downloadResultsBtn = document.getElementById('download-results-btn');
 const errorBox = document.getElementById('error-box');
 const resultsSection = document.getElementById('results');
 
@@ -1174,6 +1177,27 @@ evaluateBtn.addEventListener('click', () => {
   renderKMap(kmapContainer, truthTable, variables);
   renderCircuitDiagram(ast);
 
+  // Store results for export
+  const truthTableRows = truthTable.map(row => {
+    const vals = variables.map(v => row.assignment[v] ? '1' : '0');
+    return `${vals.join(' | ')} | ${row.output ? '1' : '0'}`;
+  });
+
+  lastResults = {
+    originalExpression: raw,
+    normalizedExpression: astToInfix(ast),
+    variables: variables.length ? variables.join(', ') : '(none)',
+    minimalSOP,
+    minimalPOS,
+    canonicalDNF,
+    canonicalCNF,
+    steps,
+    truthTable: {
+      variables,
+      rows: truthTableRows
+    }
+  };
+
   resultsSection.hidden = false;
 });
 
@@ -1181,6 +1205,110 @@ clearBtn.addEventListener('click', () => {
   expressionInput.value = '';
   resetOutputs();
 });
+
+// Example expressions for demonstration
+const exampleExpressions = [
+  "(A AND B) OR (C AND D)",
+  "A' + B · C",
+  "(A XOR B) AND (C OR D')",
+  "A NAND B",
+  "(A + B) · (C + D)",
+  "A · B' + C",
+  "NOT(A OR B) AND C"
+];
+
+let currentExampleIndex = 0;
+
+exampleBtn.addEventListener('click', () => {
+  expressionInput.value = exampleExpressions[currentExampleIndex];
+  currentExampleIndex = (currentExampleIndex + 1) % exampleExpressions.length;
+  resetOutputs();
+});
+
+// Export functionality
+let lastResults = null;
+
+copyResultsBtn.addEventListener('click', async () => {
+  if (!lastResults) return;
+  
+  const text = formatResultsAsText(lastResults);
+  
+  try {
+    await navigator.clipboard.writeText(text);
+    copyResultsBtn.textContent = '✅ Copied!';
+    setTimeout(() => {
+      copyResultsBtn.textContent = '📋 Copy All Results';
+    }, 2000);
+  } catch (err) {
+    console.error('Failed to copy:', err);
+    copyResultsBtn.textContent = '❌ Copy Failed';
+    setTimeout(() => {
+      copyResultsBtn.textContent = '📋 Copy All Results';
+    }, 2000);
+  }
+});
+
+downloadResultsBtn.addEventListener('click', () => {
+  if (!lastResults) return;
+  
+  const text = formatResultsAsText(lastResults);
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `boolean-calculator-results-${Date.now()}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+
+function formatResultsAsText(results) {
+  const lines = [];
+  lines.push('═══════════════════════════════════════════════');
+  lines.push('   BOOLEAN ALGEBRA CALCULATOR - RESULTS');
+  lines.push('═══════════════════════════════════════════════');
+  lines.push('');
+  lines.push(`Expression: ${results.originalExpression}`);
+  lines.push(`Normalized: ${results.normalizedExpression}`);
+  lines.push(`Variables: ${results.variables}`);
+  lines.push('');
+  lines.push('───────────────────────────────────────────────');
+  lines.push('SIMPLIFIED FORMS');
+  lines.push('───────────────────────────────────────────────');
+  lines.push(`Minimal SOP: ${results.minimalSOP}`);
+  lines.push(`Minimal POS: ${results.minimalPOS}`);
+  lines.push(`Canonical DNF: ${results.canonicalDNF}`);
+  lines.push(`Canonical CNF: ${results.canonicalCNF}`);
+  lines.push('');
+  lines.push('───────────────────────────────────────────────');
+  lines.push('SIMPLIFICATION STEPS');
+  lines.push('───────────────────────────────────────────────');
+  results.steps.forEach((step, idx) => {
+    lines.push(`${idx + 1}. ${step}`);
+  });
+  lines.push('');
+  lines.push('───────────────────────────────────────────────');
+  lines.push('TRUTH TABLE');
+  lines.push('───────────────────────────────────────────────');
+  
+  // Header
+  const headerVars = results.truthTable.variables.join(' | ');
+  lines.push(`${headerVars} | F`);
+  lines.push('─'.repeat(headerVars.length + 6));
+  
+  // Rows
+  results.truthTable.rows.forEach(row => {
+    lines.push(row);
+  });
+  
+  lines.push('');
+  lines.push('═══════════════════════════════════════════════');
+  lines.push(`Generated on: ${new Date().toLocaleString()}`);
+  lines.push('═══════════════════════════════════════════════');
+  
+  return lines.join('\n');
+}
 
 // Initialize
 resetOutputs();
